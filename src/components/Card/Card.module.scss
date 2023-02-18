@@ -5,8 +5,10 @@
   border-radius: 40px;
   margin-right: 30px;
   transition: box-shadow 0.13s ease-in-out, transform 0.13s ease-in-out;
-  cursor: pointer;
-
+  margin-bottom: 30px;
+  .plus {
+    cursor: pointer;
+  }
   .favorite {
     position: absolute;
     cursor: pointer;
