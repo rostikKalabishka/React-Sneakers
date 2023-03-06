@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import ContentLoader from "react-content-loader";
+
 import cardStyles from "./Card.module.scss";
 
 export function Card({
@@ -13,7 +14,6 @@ export function Card({
   added,
   loading = false,
 }) {
-  console.log(added);
   const [isAdded, setIsAdded] = useState(added);
   const [isFavorite, setIsFavorite] = useState(favorited);
 
@@ -65,12 +65,14 @@ export function Card({
               <b> {price}$ </b>
             </div>
 
-            <img
-              className={cardStyles.plus}
-              onClick={handleClickPlus}
-              src={isAdded ? "/img/like.svg" : "/img/btn-plus.svg"}
-              alt="Plus"
-            />
+            {onClickPlus && (
+              <img
+                className={cardStyles.plus}
+                onClick={handleClickPlus}
+                src={isAdded ? "/img/like.svg" : "/img/btn-plus.svg"}
+                alt="Plus"
+              />
+            )}
           </div>
         </>
       )}

@@ -1,6 +1,11 @@
+import { useContext } from "react";
 import { Link } from "react-router-dom";
 
+import { useCart } from "../../hooks/useCart";
+
 export function Header({ onClickCart, onClickFavorite }) {
+  const { totalPrice } = useCart();
+
   return (
     <header className="d-flex justify-between align-center p-40">
       <div className="d-flex align-center ">
@@ -32,7 +37,7 @@ export function Header({ onClickCart, onClickFavorite }) {
             />
           </svg>
 
-          <span>6200$</span>
+          <span>{totalPrice}$</span>
         </li>
         <li onClick={onClickFavorite} className="mr-30 cu-p" alt="Favorite">
           <Link to="/favorites">
@@ -40,7 +45,14 @@ export function Header({ onClickCart, onClickFavorite }) {
           </Link>
         </li>
         <li>
-          <img width={20} height={20} src="/img/user-profile-icon.svg" />
+          <Link to="/orders">
+            <img
+              width={20}
+              height={20}
+              src="/img/user-profile-icon.svg"
+              alt="User"
+            />
+          </Link>
         </li>
       </ul>
     </header>

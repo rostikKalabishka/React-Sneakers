@@ -1,7 +1,47 @@
-export function Cart({ onClose, onRemove, items = [] }) {
+import axios from "axios";
+import { useContext, useState } from "react";
+
+import { useCart } from "../../hooks/useCart";
+import Info from "../Info";
+
+import styles from "./Cart.module.scss";
+const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+export function Cart({ onClose, onRemove, items = [], opened }) {
+  const { cartItems, setCartItems, totalPrice } = useCart();
+  const [orderId, setOrderId] = useState(null);
+  const [isOrderComplete, setIsOrderComplete] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const onClickOrder = async () => {
+    try {
+      setIsLoading(true);
+      const { data } = await axios.post(
+        "https://63f4a3023f99f5855db3e9d1.mockapi.io/orders",
+        { items: cartItems }
+      );
+
+      setOrderId(data.id);
+      setIsOrderComplete(true);
+      setCartItems([]);
+
+      for (let i = 0; i < cartItems.length; i++) {
+        const item = cartItems[i];
+
+        await axios.delete(
+          "https://63f1076a5b7cf4107e2bb756.mockapi.io/cart/" + item.id
+        );
+        await delay(1000);
+      }
+    } catch (error) {
+      alert("Failed to create an order");
+    }
+    setIsLoading(false);
+  };
+
   return (
-    <div className="overlay">
-      <div className="drawer">
+    <div className={`${styles.overlay} ${opened ? styles.overlayVisible : ""}`}>
+      <div className={styles.drawer}>
         <h2 className="d-flex justify-between mb-30 ">
           Cart{" "}
           <img
@@ -13,7 +53,7 @@ export function Cart({ onClose, onRemove, items = [] }) {
         </h2>
 
         {items.length > 0 ? (
-          <div>
+          <div className="d-flex flex-column flex">
             <div className="items">
               {items.map((obj) => (
                 <div
@@ -44,34 +84,34 @@ export function Cart({ onClose, onRemove, items = [] }) {
                 <li>
                   <span>Total:</span>
                   <div></div>
-                  <b>538$</b>
+                  <b>{totalPrice}$</b>
                 </li>
                 <li>
                   <span>Tax 5%:</span>
                   <div></div>
-                  <b>26.9$</b>
+                  <b>{Math.round(totalPrice * 0.05)}$</b>
                 </li>
               </ul>
-              <button className="greenButton"> Place order</button>
+              <button
+                disabled={isLoading}
+                onClick={onClickOrder}
+                className="greenButton"
+              >
+                {" "}
+                Place order
+              </button>
             </div>
           </div>
         ) : (
-          <div className="cartEmpty d-flex align-center justify-center flex-column flex">
-            <img
-              className="mb-20"
-              width={120}
-              height={120}
-              src="/img/empty-cart.png"
-              alt="emptyCart"
-            />
-            <h2>Empty cart</h2>
-            <p className="opacity-6">
-              Add at least one pair of sneakers to order
-            </p>
-            <button onClick={onClose} className="greenButton">
-              Go back
-            </button>
-          </div>
+          <Info
+            title={isOrderComplete ? "Order placed!" : "Empty cart"}
+            description={
+              isOrderComplete
+                ? `Your order # ${orderId} will soon be transferred to courier delivery`
+                : "Add at least one pair of sneakers to order"
+            }
+            img={isOrderComplete ? "/img/blank.jpg" : "/img/empty-cart.png"}
+          />
         )}
       </div>
     </div>

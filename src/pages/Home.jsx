@@ -1,4 +1,6 @@
+import { useContext } from "react";
 import Card from "../components/Card/Card";
+import AppContext from "../context";
 function Home({
   items,
   cartItems,
@@ -17,7 +19,6 @@ function Home({
         key={index}
         onClickFavorite={(obj) => onAddToFavorites(obj)}
         onClickPlus={(obj) => onAddToCart(obj)}
-        added={cartItems.some((obj) => Number(obj.id) === Number(item.id))}
         loading={isLoading}
         {...item}
       />
