@@ -5,7 +5,7 @@ import axios from "axios";
 import AppContext from "../context";
 
 function Orders() {
-  const { onAddToFavorites, onAddToCart } = useContext(AppContext);
+  const { onAddToFavorites } = useContext(AppContext);
   const [orders, setOrders] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
